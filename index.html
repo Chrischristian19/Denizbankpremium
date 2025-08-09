@@ -198,17 +198,33 @@
     /* Google Translate Widget Styling */
     .goog-te-gadget {
       font-size: 0.9rem !important;
+      display: none; /* Hide default widget */
     }
-    .goog-te-gadget .goog-te-combo {
+    .goog-te-combo {
       background: rgba(255, 255, 255, 0.2) !important;
       color: white !important;
       border: none !important;
       padding: 0.3rem 0.8rem !important;
       border-radius: 12px !important;
       font-weight: 500 !important;
+      max-height: 200px !important; /* Ensure scrollable height */
+      overflow-y: auto !important; /* Enable scrolling for language list */
     }
-    .goog-te-gadget .goog-te-combo:hover {
+    .goog-te-combo:hover {
       background: rgba(255, 255, 255, 0.3) !important;
+    }
+    #translate-btn {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      padding: 0.3rem 0.8rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    #translate-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
     }
   </style>
 </head>
@@ -227,6 +243,7 @@
     <div class="actions">
       <a href="convert.html"><button>Transfer</button></a>
       <a href="addmoney.html"><button>Add Money</button></a>
+      <button id="translate-btn">🌐</button>
       <div id="google_translate_element"></div>
     </div>
   </header>
@@ -356,12 +373,25 @@
       );
     }
 
-    // Ensure the translate element is loaded
+    // Ensure the translate element is loaded and trigger it with the button
     window.addEventListener('load', function() {
-      if (!document.getElementById('google_translate_element').children.length) {
+      const translateBtn = document.getElementById('translate-btn');
+      const translateElement = document.getElementById('google_translate_element');
+
+      if (!translateElement.children.length) {
         console.log('Translate widget not loaded, retrying...');
         setTimeout(googleTranslateElementInit, 1000); // Retry after 1 second if not loaded
       }
+
+      translateBtn.addEventListener('click', function() {
+        const select = translateElement.querySelector('.goog-te-combo');
+        if (select) {
+          select.style.display = 'block'; // Show the dropdown
+          select.focus(); // Focus to open the list
+        } else {
+          console.log('Translate dropdown not found');
+        }
+      });
     });
   </script>
 </body>
