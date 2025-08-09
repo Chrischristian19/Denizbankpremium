@@ -198,7 +198,7 @@
     /* Google Translate Widget Styling */
     .goog-te-gadget {
       font-size: 0.9rem !important;
-      display: none; /* Hide default widget */
+      display: none !important; /* Hide default widget container */
     }
     .goog-te-combo {
       background: rgba(255, 255, 255, 0.2) !important;
@@ -209,6 +209,11 @@
       font-weight: 500 !important;
       max-height: 200px !important; /* Ensure scrollable height */
       overflow-y: auto !important; /* Enable scrolling for language list */
+      position: absolute !important;
+      top: 100% !important;
+      left: 0 !important;
+      z-index: 1000 !important;
+      display: none !important; /* Hidden by default */
     }
     .goog-te-combo:hover {
       background: rgba(255, 255, 255, 0.3) !important;
@@ -222,9 +227,13 @@
       font-size: 0.9rem;
       font-weight: 500;
       cursor: pointer;
+      position: relative;
     }
     #translate-btn:hover {
       background: rgba(255, 255, 255, 0.3);
+    }
+    #translate-btn.active .goog-te-combo {
+      display: block !important; /* Show dropdown when button is active */
     }
   </style>
 </head>
@@ -243,8 +252,10 @@
     <div class="actions">
       <a href="convert.html"><button>Transfer</button></a>
       <a href="addmoney.html"><button>Add Money</button></a>
-      <button id="translate-btn">🌐</button>
-      <div id="google_translate_element"></div>
+      <div>
+        <button id="translate-btn">🌐</button>
+        <div id="google_translate_element"></div>
+      </div>
     </div>
   </header>
 
@@ -371,27 +382,37 @@
         { pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE },
         'google_translate_element'
       );
-    }
 
-    // Ensure the translate element is loaded and trigger it with the button
-    window.addEventListener('load', function() {
+      // Add click event to toggle dropdown
       const translateBtn = document.getElementById('translate-btn');
       const translateElement = document.getElementById('google_translate_element');
+      const select = translateElement.querySelector('.goog-te-combo');
 
-      if (!translateElement.children.length) {
+      if (select) {
+        translateBtn.addEventListener('click', function() {
+          select.style.display = select.style.display === 'block' ? 'none' : 'block';
+          if (select.style.display === 'block') {
+            select.focus(); // Attempt to open the dropdown
+          }
+        });
+
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+          if (!translateBtn.contains(event.target) && !translateElement.contains(event.target)) {
+            select.style.display = 'none';
+          }
+        });
+      } else {
+        console.log('Translate dropdown not found after initialization');
+      }
+    }
+
+    // Ensure the translate element is loaded
+    window.addEventListener('load', function() {
+      if (!document.getElementById('google_translate_element').children.length) {
         console.log('Translate widget not loaded, retrying...');
         setTimeout(googleTranslateElementInit, 1000); // Retry after 1 second if not loaded
       }
-
-      translateBtn.addEventListener('click', function() {
-        const select = translateElement.querySelector('.goog-te-combo');
-        if (select) {
-          select.style.display = 'block'; // Show the dropdown
-          select.focus(); // Focus to open the list
-        } else {
-          console.log('Translate dropdown not found');
-        }
-      });
     });
   </script>
 </body>
