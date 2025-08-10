@@ -3,16 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Deniz Bank Dashboard</title>
+  <title>Deniz Bank Transfer</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Translate API -->
-  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       margin: 0;
-      background-color: #f5f5f5;
+      background: linear-gradient(135deg, #f0f2f5, #e0e7ff);
       height: 100vh;
       display: flex;
       flex-direction: column;
@@ -21,122 +19,189 @@
     .header {
       background: linear-gradient(135deg, #6b21a8, #8e44ad);
       color: white;
-      padding: 1rem 1.5rem;
+      padding: 1.5rem 2rem;
       text-align: center;
       position: relative;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
     .header .user-info {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
-      font-weight: 500;
-      margin-bottom: 0.25rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      transition: color 0.3s;
+    }
+    .header .user-info:hover {
+      color: #ddd;
     }
     .header .user-photo {
-      width: 30px;
-      height: 30px;
+      width: 35px;
+      height: 35px;
       border-radius: 50%;
-      margin-right: 0.5rem;
+      margin-right: 0.75rem;
       object-fit: cover;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: transform 0.3s;
     }
     .header .user-photo:hover {
-      transform: scale(1.1);
+      transform: scale(1.15);
     }
     .header .balance-container {
       display: flex;
       justify-content: center;
       align-items: baseline;
+      font-size: 2rem;
+      font-weight: 700;
     }
     .header .balance {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin-right: 0.5rem;
+      margin-right: 0.75rem;
     }
     .header .currency {
-      font-size: 0.75rem;
-      background: rgba(255, 255, 255, 0.15);
-      padding: 0.1rem 0.4rem;
-      border-radius: 8px;
+      font-size: 0.9rem;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 0.2rem 0.5rem;
+      border-radius: 10px;
       display: flex;
       align-items: center;
     }
     .header .currency img {
-      width: 12px;
-      height: 12px;
-      margin-right: 0.25rem;
-    }
-    .header .actions {
-      margin-top: 0.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-    .header .actions button {
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
-      border: none;
-      padding: 0.3rem 0.8rem;
-      border-radius: 12px;
-      font-size: 0.9rem;
-      font-weight: 500;
-    }
-    .header .actions button:hover {
-      background: rgba(255, 255, 255, 0.3);
+      width: 14px;
+      height: 14px;
+      margin-right: 0.3rem;
     }
     .content {
       flex-grow: 1;
-      padding: 1rem 1.5rem;
+      padding: 1.5rem 2rem;
       overflow-y: auto;
     }
-    .section {
+    .form-section {
       background: white;
-      border-radius: 12px;
-      padding: 0.75rem;
-      margin-bottom: 0.75rem;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.5s ease-in;
     }
-    .transaction-item, .quick-action {
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    .form-group label {
+      display: block;
+      font-size: 1rem;
+      color: #444;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    .form-group select, .form-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .form-group select:focus, .form-group input:focus {
+      outline: none;
+      border-color: #6b21a8;
+      box-shadow: 0 0 8px rgba(107, 33, 168, 0.3);
+    }
+    .form-group .invalid {
+      border-color: #ef4444;
+    }
+    .form-group .checkmark {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #10b981;
+      font-size: 1.2rem;
+      display: none;
+    }
+    .form-group.verified .checkmark {
+      display: block;
+    }
+    .form-group .error {
+      color: #ef4444;
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+    .form-group.invalid .error {
+      display: block;
+    }
+    .submit-btn {
+      background: linear-gradient(135deg, #6b21a8, #8e44ad);
+      color: white;
+      border: none;
+      padding: 0.9rem 1.8rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      width: 100%;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      margin-top: 1rem;
+    }
+    .submit-btn:hover {
+      background: linear-gradient(135deg, #5a1a90, #7d3aa5);
+      transform: translateY(-2px);
+    }
+    .submit-btn.hidden {
+      display: none;
+    }
+    .error-message {
+      color: #ef4444;
+      font-size: 1rem;
+      text-align: center;
+      margin-top: 1rem;
+      display: none;
+    }
+    .error-message.active {
+      display: block;
+    }
+    .transactions-section {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.5s ease-in;
+    }
+    .transaction-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.5rem 0;
+      padding: 0.75rem 0;
       border-bottom: 1px solid #e0e0e0;
+      font-size: 1rem;
     }
-    .transaction-item:last-child, .quick-action:last-child {
+    .transaction-item:last-child {
       border-bottom: none;
     }
-    .transaction-item .details, .quick-action .details {
+    .transaction-item .details {
       display: flex;
       align-items: center;
     }
-    .transaction-item .icon, .quick-action .icon {
+    .transaction-item .icon {
       width: 40px;
       height: 40px;
       background: #e0e0e0;
       border-radius: 50%;
-      margin-right: 0.75rem;
+      margin-right: 1rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
-      font-weight: 500;
+      font-size: 1.2rem;
+      font-weight: 600;
       color: #333;
-    }
-    .transaction-item .name, .quick-action .name {
-      font-size: 0.95rem;
-      color: #333;
-    }
-    .transaction-item .time, .quick-action .time {
-      font-size: 0.75rem;
-      color: #666;
     }
     .transaction-item .amount {
-      font-size: 0.95rem;
       font-weight: 500;
     }
     .transaction-item .amount.positive {
@@ -145,95 +210,35 @@
     .transaction-item .amount.negative {
       color: #ef4444;
     }
-    .carousel {
-      overflow-x: auto;
-      white-space: nowrap;
-      -webkit-overflow-scrolling: touch;
-      scroll-behavior: smooth;
-      margin-bottom: 0.75rem;
-    }
-    .carousel::-webkit-scrollbar {
-      display: none; /* Hide scrollbar for a cleaner look */
-    }
-    .carousel-item {
-      display: inline-block;
-      width: 300px;
-      height: 150px;
-      margin-right: 0.75rem;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    }
-    .carousel-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .carousel-item a {
-      display: block;
-      height: 100%;
-    }
     .footer {
       background: #6b21a8;
-      padding: 0.5rem;
+      padding: 0.75rem;
       display: flex;
       justify-content: space-around;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
     }
     .footer a {
       color: white;
       text-decoration: none;
-      font-size: 0.9rem;
+      font-size: 1rem;
       display: flex;
       flex-direction: column;
       align-items: center;
+      transition: color 0.3s;
     }
     .footer a:hover {
-      color: #ddd;
+      color: #bbd0ff;
     }
     .footer .icon {
-      font-size: 1.2rem;
-      margin-bottom: 0.1rem;
+      font-size: 1.3rem;
+      margin-bottom: 0.2rem;
     }
-    /* Google Translate Widget Styling */
-    .goog-te-gadget {
-      font-size: 0.9rem !important;
-      display: none !important; /* Hide default widget container */
-    }
-    .goog-te-combo {
-      background: rgba(255, 255, 255, 0.2) !important;
-      color: white !important;
-      border: none !important;
-      padding: 0.3rem 0.8rem !important;
-      border-radius: 12px !important;
-      font-weight: 500 !important;
-      max-height: 200px !important; /* Ensure scrollable height */
-      overflow-y: auto !important; /* Enable scrolling for language list */
-      position: absolute !important;
-      top: 100% !important;
-      left: 0 !important;
-      z-index: 1000 !important;
-      display: none !important; /* Hidden by default */
-    }
-    .goog-te-combo:hover {
-      background: rgba(255, 255, 255, 0.3) !important;
-    }
-    #translate-btn {
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
-      border: none;
-      padding: 0.3rem 0.8rem;
-      border-radius: 12px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      position: relative;
-    }
-    #translate-btn:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
-    #translate-btn.active .goog-te-combo {
-      display: block !important; /* Show dropdown when button is active */
+    .bank-logo {
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+      margin-left: 0.5rem;
     }
   </style>
 </head>
@@ -241,118 +246,89 @@
   <!-- Header -->
   <header class="header">
     <div class="user-info">
-      <a href="profile.html"><img src="https://i.pravatar.cc/30?img=3" alt="Hakan Celik" class="user-photo"></a>
+      <a href="profile.html"><img src="https://i.pravatar.cc/35?img=3" alt="Hakan Celik" class="user-photo"></a>
       <span>Hi, Hakan Celik</span>
     </div>
     <div class="balance-container">
       <div class="balance">₺543,433.65</div>
       <div class="currency">
-      </div>
-    </div>
-    <div class="actions">
-      <a href="convert.html"><button>Transfer</button></a>
-      <a href="addmoney.html"><button>Add Money</button></a>
-      <div>
-        <button id="translate-btn">🌐</button>
-        <div id="google_translate_element"></div>
+        <img src="https://flagcdn.com/w14/tr.png" alt="Turkish Flag"> TRY
       </div>
     </div>
   </header>
 
   <!-- Content -->
   <div class="content">
-    <!-- Account Overview -->
-    <div class="section">
+    <div class="form-section">
+      <h2 class="text-2xl font-bold mb-6">Transfer Money</h2>
+      <form id="transferForm">
+        <div class="form-group">
+          <label for="account-number">Account Number</label>
+          <input type="text" id="account-number" name="account-number" placeholder="Enter account number" required>
+          <span class="error">Account not correct</span>
+        </div>
+        <div class="form-group">
+          <label for="bank-name">Bank Name</label>
+          <select id="bank-name" name="bank-name" required>
+            <option value="">Select a bank</option>
+            <option value="denizbank">DenizBank <img class="bank-logo" src="https://i.ibb.co/placeholder/denizbank-logo.png" alt="DenizBank Logo"></option>
+            <option value="ziraat">Ziraat Bankası <img class="bank-logo" src="https://i.ibb.co/placeholder/ziraat-logo.png" alt="Ziraat Logo"></option>
+            <option value="isbank">İş Bankası <img class="bank-logo" src="https://i.ibb.co/placeholder/isbank-logo.png" alt="İş Bankası Logo"></option>
+            <option value="garanti">Garanti BBVA <img class="bank-logo" src="https://i.ibb.co/placeholder/garanti-logo.png" alt="Garanti Logo"></option>
+            <option value="akbank">Akbank <img class="bank-logo" src="https://i.ibb.co/placeholder/akbank-logo.png" alt="Akbank Logo"></option>
+            <option value="yapikredi">Yapı Kredi <img class="bank-logo" src="https://i.ibb.co/placeholder/yapikredi-logo.png" alt="Yapı Kredi Logo"></option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="recipient-name">Recipient Name</label>
+          <input type="text" id="recipient-name" name="recipient-name" placeholder="Enter recipient name" required>
+          <span class="checkmark">✓</span>
+        </div>
+        <div class="form-group">
+          <label for="amount">Amount to Send</label>
+          <input type="number" id="amount" name="amount" placeholder="Enter amount" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="pin">4-Digit PIN</label>
+          <input type="password" id="pin" name="pin" placeholder="Enter 4-digit PIN" maxlength="4" pattern="\d{4}" required>
+        </div>
+        <button type="button" id="verify-btn" class="submit-btn hidden">Verify Account</button>
+        <button type="submit" id="transfer-btn" class="submit-btn hidden">Confirm Transfer</button>
+        <div class="error-message" id="errorMessage">You currently cannot make transactions please visit your bank branch</div>
+      </form>
+    </div>
+    <div class="transactions-section">
+      <h3 class="text-xl font-semibold mb-4">Recent Transactions</h3>
       <div class="transaction-item">
         <div class="details">
-          <div class="icon">A</div>
-          <div>
-            <div class="name">Deniz Bank Checking</div>
-            <div class="time">Last Updated: 09/08/2025</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Recent Transactions -->
-    <div class="section">
-      <h3 class="text-lg font-medium mb-2">Recent Transactions</h3>
-      <div class="transaction-item">
-        <a href="bobatunde.html" class="details">
           <div class="icon">B</div>
           <div>
             <div class="name">Bobatunde Mason</div>
-            <div class="time">11 Jun 2019</div>
+            <div class="time">08/09/2025 02:00 PM</div>
           </div>
-        </a>
+        </div>
         <span class="amount positive">+₺50,000.00</span>
       </div>
       <div class="transaction-item">
-        <a href="ekdc.html" class="details">
+        <div class="details">
           <div class="icon">E</div>
           <div>
             <div class="name">Electricity Bill</div>
-            <div class="time">09/08/2025 04:00 AM</div>
+            <div class="time">08/09/2025 01:30 PM</div>
           </div>
-        </a>
+        </div>
         <span class="amount negative">-₺2,000.00</span>
       </div>
       <div class="transaction-item">
-        <a href="tiwa.html" class="details">
+        <div class="details">
           <div class="icon">T</div>
           <div>
             <div class="name">Tiwa Adeleke</div>
-            <div class="time">09/08/2025 03:30 AM</div>
+            <div class="time">08/09/2025 01:00 PM</div>
           </div>
-        </a>
+        </div>
         <span class="amount negative">-₺36,000.00</span>
       </div>
-      <a href="alltransactions.html" class="text-blue-600 mt-2 block">View All</a>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="section">
-      <h3 class="text-lg font-medium mb-2">Quick Actions</h3>
-      <div class="quick-action">
-        <a href="paybill.html" class="details">
-          <div class="icon">💰</div>
-          <div>
-            <div class="name">Pay Bill</div>
-            <div class="time">Instant</div>
-          </div>
-        </a>
-      </div>
-      <div class="quick-action">
-        <a href="sendmoney.html" class="details">
-          <div class="icon">💸</div>
-          <div>
-            <div class="name">Send Money</div>
-            <div class="time">Instant</div>
-          </div>
-        </a>
-      </div>
-      <div class="quick-action">
-        <a href="requestmoney.html" class="details">
-          <div class="icon">📥</div>
-          <div>
-            <div class="name">Request Money</div>
-            <div class="time">Instant</div>
-          </div>
-        </a>
-      </div>
-    </div>
-
-    <!-- Image Carousel -->
-    <div class="carousel">
-      <a href="offer1.html" class="carousel-item">
-        <img src="https://i.ibb.co/Zz5QZ670/sddefault.jpg" alt="Offer 1">
-      </a>
-      <a href="offer2.html" class="carousel-item">
-        <img src="https://i.ibb.co/BHMzp1Jw/hqdefault.jpg" alt="Offer 2">
-      </a>
-      <a href="offer3.html" class="carousel-item">
-        <img src="https://i.ibb.co/xSdtWyK4/maxresdefault.jpg" alt="Offer 3">
-      </a>
     </div>
   </div>
 
@@ -376,43 +352,80 @@
     </a>
   </footer>
 
-  <script type="text/javascript">
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement(
-        { pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE },
-        'google_translate_element'
-      );
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('transferForm');
+      const accountNumber = document.getElementById('account-number');
+      const bankName = document.getElementById('bank-name');
+      const recipientName = document.getElementById('recipient-name');
+      const amount = document.getElementById('amount');
+      const pin = document.getElementById('pin');
+      const verifyBtn = document.getElementById('verify-btn');
+      const transferBtn = document.getElementById('transfer-btn');
+      const errorMessage = document.getElementById('errorMessage');
+      const recipientNameGroup = recipientName.parentElement;
+      const checkmark = recipientName.nextElementSibling;
 
-      // Add click event to toggle dropdown
-      const translateBtn = document.getElementById('translate-btn');
-      const translateElement = document.getElementById('google_translate_element');
-      const select = translateElement.querySelector('.goog-te-combo');
-
-      if (select) {
-        translateBtn.addEventListener('click', function() {
-          select.style.display = select.style.display === 'block' ? 'none' : 'block';
-          if (select.style.display === 'block') {
-            select.focus(); // Attempt to open the dropdown
-          }
-        });
-
-        // Hide dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-          if (!translateBtn.contains(event.target) && !translateElement.contains(event.target)) {
-            select.style.display = 'none';
-          }
-        });
-      } else {
-        console.log('Translate dropdown not found after initialization');
+      // Function to check if all fields are filled
+      function checkFieldsFilled() {
+        return (
+          accountNumber.value.trim() !== '' &&
+          bankName.value !== '' &&
+          recipientName.value.trim() !== '' &&
+          amount.value.trim() !== '' &&
+          pin.value.length === 4
+        );
       }
-    }
 
-    // Ensure the translate element is loaded
-    window.addEventListener('load', function() {
-      if (!document.getElementById('google_translate_element').children.length) {
-        console.log('Translate widget not loaded, retrying...');
-        setTimeout(googleTranslateElementInit, 1000); // Retry after 1 second if not loaded
-      }
+      // Real-time validation for all fields
+      [accountNumber, bankName, recipientName, amount, pin].forEach(input => {
+        input.addEventListener('input', () => {
+          verifyBtn.classList.toggle('hidden', !checkFieldsFilled());
+          transferBtn.classList.add('hidden'); // Hide transfer button until verified
+          recipientNameGroup.classList.remove('verified');
+          checkmark.style.display = 'none';
+        });
+      });
+
+      // Verify button click
+      verifyBtn.addEventListener('click', function() {
+        if (checkFieldsFilled()) {
+          alert('Account Recognized!');
+          recipientNameGroup.classList.add('verified');
+          checkmark.style.display = 'block';
+          transferBtn.classList.remove('hidden');
+          verifyBtn.classList.add('hidden');
+          // Disable fields after verification
+          accountNumber.disabled = true;
+          bankName.disabled = true;
+          recipientName.disabled = true;
+          amount.disabled = true;
+          pin.disabled = true;
+        }
+      });
+
+      // Transfer button submit
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        errorMessage.classList.add('active');
+        setTimeout(() => {
+          errorMessage.classList.remove('active');
+          accountNumber.value = '';
+          bankName.value = '';
+          recipientName.value = '';
+          amount.value = '';
+          pin.value = '';
+          recipientNameGroup.classList.remove('verified');
+          checkmark.style.display = 'none';
+          verifyBtn.classList.add('hidden');
+          transferBtn.classList.add('hidden');
+          accountNumber.disabled = false;
+          bankName.disabled = false;
+          recipientName.disabled = false;
+          amount.disabled = false;
+          pin.disabled = false;
+        }, 3000); // Reset after 3 seconds
+      });
     });
   </script>
 </body>
