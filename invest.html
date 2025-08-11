@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deniz Bank - Invest in Crypto</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #f0f2f5, #e0e7ff);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #6b21a8, #8e44ad);
+      color: white;
+      padding: 1rem 1.5rem;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .header .user-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      transition: color 0.3s;
+    }
+    .header .user-info:hover {
+      color: #ddd;
+    }
+    .header .user-photo {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+      object-fit: cover;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .header .user-photo:hover {
+      transform: scale(1.15);
+    }
+    .header .balance-container {
+      display: flex;
+      justify-content: center;
+      align-items: baseline;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .header .balance {
+      margin-right: 0.5rem;
+    }
+    .header .currency {
+      font-size: 0.75rem;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 0.15rem 0.4rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+    }
+    .header .currency img {
+      width: 12px;
+      height: 12px;
+      margin-right: 0.2rem;
+    }
+    .content {
+      flex-grow: 1;
+      padding: 1rem 1rem;
+      overflow-y: auto;
+    }
+    .description-section {
+      background: white;
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border: 2px solid #6b21a8;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .description-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 18px rgba(107, 33, 168, 0.3);
+    }
+    .description-section p {
+      font-size: 0.9rem;
+      color: #444;
+      margin-bottom: 1rem;
+    }
+    .banner-section {
+      background: white;
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      border: 2px solid #6b21a8;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .banner-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 18px rgba(107, 33, 168, 0.3);
+    }
+    .banner-section img {
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .form-section {
+      background: white;
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.5s ease-in;
+      border: 2px solid #6b21a8;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .form-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 18px rgba(107, 33, 168, 0.3);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .form-group {
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.9rem;
+      color: #444;
+      margin-bottom: 0.4rem;
+      font-weight: 500;
+    }
+    .form-group select, .form-group input {
+      width: 100%;
+      padding: 0.6rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      min-height: 44px; /* Ensure touch-friendly size */
+    }
+    .form-group select:focus, .form-group input:focus {
+      outline: none;
+      border-color: #6b21a8;
+      box-shadow: 0 0 6px rgba(107, 33, 168, 0.3);
+    }
+    .form-group .invalid {
+      border-color: #ef4444;
+    }
+    .form-group .error {
+      color: #ef4444;
+      font-size: 0.8rem;
+      margin-top: 0.2rem;
+      display: none;
+    }
+    .form-group.invalid .error {
+      display: block;
+    }
+    .form-group .estimate-info {
+      color: #6b21a8;
+      font-size: 0.8rem;
+      margin-top: 0.2rem;
+    }
+    .submit-btn {
+      background: linear-gradient(135deg, #6b21a8, #8e44ad);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      width: 100%;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      margin-top: 0.75rem;
+      min-height: 48px; /* Ensure touch-friendly size */
+    }
+    .submit-btn:hover {
+      background: linear-gradient(135deg, #5a1a90, #7d3aa5);
+      transform: translateY(-2px);
+    }
+    .submit-btn.hidden {
+      display: none;
+    }
+    .footer {
+      background: #6b21a8;
+      padding: 0.5rem;
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .footer a {
+      color: white;
+      text-decoration: none;
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: color 0.3s;
+      padding: 0.5rem;
+    }
+    .footer a:hover {
+      color: #bbd0ff;
+    }
+    .footer .icon {
+      font-size: 1.2rem;
+      margin-bottom: 0.2rem;
+    }
+    /* Popup Styles */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .popup-content {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      max-width: 90%;
+      width: 300px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      animation: popupFadeIn 0.3s ease-in;
+    }
+    @keyframes popupFadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .popup-content h3 {
+      color: #ef4444;
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+    .popup-content p {
+      color: #444;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    .popup-content .cancel-btn {
+      background: #6b21a8;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.3s;
+      min-height: 44px; /* Ensure touch-friendly size */
+    }
+    .popup-content .cancel-btn:hover {
+      background: #5a1a90;
+    }
+    @media (max-width: 640px) {
+      .header {
+        padding: 0.75rem 1rem;
+      }
+      .header .balance-container {
+        font-size: 1.25rem;
+      }
+      .header .currency {
+        font-size: 0.7rem;
+      }
+      .content {
+        padding: 0.75rem;
+      }
+      .description-section, .banner-section, .form-section {
+        padding: 0.75rem;
+      }
+      .form-group label {
+        font-size: 0.85rem;
+      }
+      .form-group select, .form-group input {
+        font-size: 0.85rem;
+        padding: 0.5rem;
+      }
+      .submit-btn {
+        font-size: 0.9rem;
+        padding: 0.6rem 1.2rem;
+      }
+      .footer a {
+        font-size: 0.7rem;
+        padding: 0.4rem;
+      }
+      .footer .icon {
+        font-size: 1.1rem;
+      }
+      .banner-section img {
+        max-height: 150px;
+      }
+    }
+  </style>
+</head>
+<body class="flex flex-col">
+  <!-- Header -->
+  <header class="header">
+    <div class="user-info">
+      <a href="profile.html"><img src="https://i.pravatar.cc/35?img=3" alt="Hakan Celik" class="user-photo"></a>
+      <span>Hi, Hakan Celik</span>
+    </div>
+    <div class="balance-container">
+      <div class="balance">₺543,433.65</div>
+      <div class="currency">
+        <img src="https://flagcdn.com/w14/tr.png" alt="Turkish Flag"> TRY
+      </div>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="content">
+    <div class="description-section">
+      <h3 class="text-lg font-bold mb-2">Investment Page 📈</h3>
+      <p>This is the investment page where you can invest in cryptocurrencies 📊 like Bitcoin (₿) and Ethereum (Ξ) using your available balance. To invest, select a crypto type (e.g., Bitcoin ₿ or Ethereum Ξ), enter the amount in TRY you wish to invest, and confirm with your PIN. Your investment will be deducted from your TRY balance.</p>
+      <p>If you need to add funds to your TRY balance first, navigate to the Add Balance page. There, you can add funds using USD 💵 (up to $80,000 available) or Crypto (up to 1,000 BTC ₿ available), which will be converted to TRY at the current exchange rate and added to your balance for investing.</p>
+      <p>Investments in USD 💵 or Crypto ₿ work by first converting those assets to TRY via the Add Balance feature, then using the TRY to purchase crypto on this page. Note: All investments are subject to market risks 📉.</p>
+    </div>
+    <div class="banner-section">
+      <h3 class="text-lg font-bold mb-2">Crypto Investment 📈</h3>
+      <img src="https://images.unsplash.com/photo-1620321023374-d1a68a79f119?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Crypto Investment Banner" />
+    </div>
+    <div class="form-section">
+      <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Invest in Crypto 📊</h2>
+      <form id="investForm">
+        <div class="form-group">
+          <label for="crypto-type">Crypto Type</label>
+          <select id="crypto-type" name="crypto-type" required>
+            <option value="">Select a crypto</option>
+            <option value="btc">Bitcoin (₿) - Current Price: ₺2,000,000</option>
+            <option value="eth">Ethereum (Ξ) - Current Price: ₺100,000</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="amount">Amount to Invest (TRY)</label>
+          <input type="number" id="amount" name="amount" placeholder="Enter amount in TRY" step="0.01" min="1" required>
+          <span class="error">Please enter a valid amount</span>
+          <span class="estimate-info" id="estimate-info"></span>
+        </div>
+        <div class="form-group">
+          <label for="pin">4-Digit PIN</label>
+          <input type="password" id="pin" name="pin" placeholder="Enter 4-digit PIN" maxlength="4" pattern="\d{4}" required>
+          <span class="error">Invalid PIN</span>
+        </div>
+        <button type="button" id="proceed-btn" class="submit-btn hidden">Proceed to Invest</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Popup -->
+  <div class="popup" id="errorPopup">
+    <div class="popup-content">
+      <h3>Investment Failed</h3>
+      <p>Unable to process investment, please try again or visit your bank branch.</p>
+      <button class="cancel-btn" id="cancelPopup">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <a href="home.html" class="details">
+      <span class="icon">🏠</span>
+      <span>Home</span>
+    </a>
+    <a href="pay.html" class="details">
+      <span class="icon">💸</span>
+      <span>Pay</span>
+    </a>
+    <a href="invest.html" class="details">
+      <span class="icon">📈</span>
+      <span>Invest</span>
+    </a>
+    <a href="cards.html" class="details">
+      <span class="icon">💳</span>
+      <span>Cards</span>
+    </a>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('investForm');
+      const cryptoType = document.getElementById('crypto-type');
+      const amount = document.getElementById('amount');
+      const pin = document.getElementById('pin');
+      const proceedBtn = document.getElementById('proceed-btn');
+      const errorPopup = document.getElementById('errorPopup');
+      const cancelPopup = document.getElementById('cancelPopup');
+      const amountError = amount.parentElement.querySelector('.error');
+      const pinError = pin.parentElement.querySelector('.error');
+      const estimateInfo = document.getElementById('estimate-info');
+
+      // Mock crypto prices in TRY
+      const prices = {
+        btc: 2000000,
+        eth: 100000
+      };
+
+      // Function to check if all fields are filled and valid
+      function checkFieldsFilled() {
+        return (
+          cryptoType.value !== '' &&
+          amount.value.trim() !== '' && amount.value > 0 &&
+          pin.value.length === 4
+        );
+      }
+
+      // Update estimate info when crypto type or amount changes
+      function updateEstimate() {
+        if (cryptoType.value && amount.value > 0) {
+          const price = prices[cryptoType.value];
+          const estimatedCrypto = (amount.value / price).toFixed(6);
+          estimateInfo.textContent = `Estimated: ${estimatedCrypto} ${cryptoType.value.toUpperCase()}`;
+        } else {
+          estimateInfo.textContent = '';
+        }
+      }
+
+      // Event listeners for crypto type and amount
+      cryptoType.addEventListener('change', () => {
+        updateEstimate();
+        proceedBtn.classList.toggle('hidden', !checkFieldsFilled());
+        amountError.style.display = 'none';
+        amount.parentElement.classList.remove('invalid');
+      });
+
+      amount.addEventListener('input', () => {
+        updateEstimate();
+        proceedBtn.classList.toggle('hidden', !checkFieldsFilled());
+        amountError.style.display = 'none';
+        amount.parentElement.classList.remove('invalid');
+      });
+
+      // Real-time validation for pin
+      pin.addEventListener('input', () => {
+        proceedBtn.classList.toggle('hidden', !checkFieldsFilled());
+        pinError.style.display = 'none';
+        pin.parentElement.classList.remove('invalid');
+      });
+
+      // Proceed to invest button click
+      proceedBtn.addEventListener('click', function() {
+        if (pin.value === '8553') {
+          if (amount.value <= 0) {
+            amount.parentElement.classList.add('invalid');
+            amountError.style.display = 'block';
+            return;
+          }
+          // Check if amount exceeds current balance (mock balance check)
+          if (amount.value > 543433.65) {
+            amountError.textContent = 'Amount exceeds available balance';
+            amount.parentElement.classList.add('invalid');
+            amountError.style.display = 'block';
+            return;
+          }
+          errorPopup.style.display = 'flex';
+        } else {
+          pin.parentElement.classList.add('invalid');
+          pinError.style.display = 'block';
+        }
+      });
+
+      // Cancel popup button click
+      cancelPopup.addEventListener('click', function() {
+        errorPopup.style.display = 'none';
+        cryptoType.value = '';
+        amount.value = '';
+        pin.value = '';
+        estimateInfo.textContent = '';
+        proceedBtn.classList.add('hidden');
+        amountError.style.display = 'none';
+        amount.parentElement.classList.remove('invalid');
+        pinError.style.display = 'none';
+        pin.parentElement.classList.remove('invalid');
+      });
+    });
+  </script>
+</body>
+</html>

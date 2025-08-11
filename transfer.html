@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deniz Bank - Transfer Money</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Roboto and Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #f0f2f5, #e0e7ff);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #6b21a8, #8e44ad);
+      color: white;
+      padding: 1.5rem 2rem;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-bottom: 3px solid #5a1a90;
+    }
+    .header .user-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      transition: color 0.3s;
+    }
+    .header .user-info:hover {
+      color: #ddd;
+    }
+    .header .user-photo {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      margin-right: 0.75rem;
+      object-fit: cover;
+      cursor: pointer;
+      transition: transform 0.3s;
+      border: 2px solid #ffffff;
+    }
+    .header .user-photo:hover {
+      transform: scale(1.15);
+    }
+    .header .balance-container {
+      display: flex;
+      justify-content: center;
+      align-items: baseline;
+      font-size: 2rem;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+    }
+    .header .balance {
+      margin-right: 0.75rem;
+    }
+    .header .currency {
+      font-size: 0.9rem;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 0.2rem 0.5rem;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+    }
+    .header .currency img {
+      width: 14px;
+      height: 14px;
+      margin-right: 0.3rem;
+    }
+    .content {
+      flex-grow: 1;
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+    }
+    .form-section {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      border: 3px solid #6b21a8;
+      animation: fadeIn 0.5s ease-in;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .form-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(107, 33, 168, 0.3);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    .form-group label {
+      display: block;
+      font-size: 1rem;
+      color: #444;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      font-family: 'Roboto', sans-serif;
+    }
+    .form-group select, .form-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      font-family: 'Roboto', sans-serif;
+      min-height: 48px; /* Touch-friendly */
+    }
+    .form-group select:focus, .form-group input:focus {
+      outline: none;
+      border-color: #6b21a8;
+      box-shadow: 0 0 8px rgba(107, 33, 168, 0.3);
+    }
+    .form-group .invalid {
+      border-color: #ef4444;
+    }
+    .form-group .checkmark {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #10b981;
+      font-size: 1.2rem;
+      display: none;
+    }
+    .form-group.verified .checkmark {
+      display: block;
+    }
+    .form-group .error {
+      color: #ef4444;
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+      display: none;
+      font-family: 'Roboto', sans-serif;
+    }
+    .form-group.invalid .error {
+      display: block;
+    }
+    .submit-btn {
+      background: linear-gradient(135deg, #6b21a8, #8e44ad);
+      color: white;
+      border: none;
+      padding: 0.9rem 1.8rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      width: 100%;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      margin-top: 1rem;
+      font-family: 'Poppins', sans-serif;
+      min-height: 50px; /* Touch-friendly */
+    }
+    .submit-btn:hover {
+      background: linear-gradient(135deg, #5a1a90, #7d3aa5);
+      transform: translateY(-2px);
+    }
+    .submit-btn.hidden {
+      display: none;
+    }
+    .error-message {
+      color: #ef4444;
+      font-size: 1rem;
+      text-align: center;
+      margin-top: 1rem;
+      display: none;
+      font-family: 'Roboto', sans-serif;
+    }
+    .error-message.active {
+      display: block;
+    }
+    .transactions-section {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      border: 3px solid #6b21a8;
+      animation: fadeIn 0.5s ease-in;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .transactions-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(107, 33, 168, 0.3);
+    }
+    .transaction-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem;
+      border-bottom: 1px solid #e0e0e0;
+      font-size: 1rem;
+      background: linear-gradient(135deg, #f9fafb, #f3e8ff);
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      transition: transform 0.2s ease;
+    }
+    .transaction-item:hover {
+      transform: scale(1.02);
+    }
+    .transaction-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+    .transaction-item .details {
+      display: flex;
+      align-items: center;
+    }
+    .transaction-item .icon {
+      width: 40px;
+      height: 40px;
+      background: #6b21a8;
+      border-radius: 50%;
+      margin-right: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+    .transaction-item .amount {
+      font-weight: 500;
+      font-family: 'Poppins', sans-serif;
+    }
+    .transaction-item .amount.positive {
+      color: #10b981;
+    }
+    .transaction-item .amount.negative {
+      color: #ef4444;
+    }
+    .footer {
+      background: #6b21a8;
+      padding: 0.75rem;
+      display: flex;
+      justify-content: space-around;
+      border-top: 3px solid #5a1a90;
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .footer a {
+      color: white;
+      text-decoration: none;
+      font-size: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: color 0.3s, transform 0.2s;
+      font-family: 'Roboto', sans-serif;
+    }
+    .footer a:hover {
+      color: #bbd0ff;
+      transform: scale(1.1);
+    }
+    .footer .icon {
+      font-size: 1.3rem;
+      margin-bottom: 0.2rem;
+    }
+    .bank-logo {
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+      margin-left: 0.5rem;
+      border-radius: 4px;
+    }
+    /* Popup Styles */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .popup-content {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+      animation: popupFadeIn 0.3s ease-in;
+      border: 3px solid #6b21a8;
+    }
+    @keyframes popupFadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .popup-content h3 {
+      color: #ef4444;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      font-family: 'Poppins', sans-serif;
+    }
+    .popup-content p {
+      color: #444;
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      font-family: 'Roboto', sans-serif;
+    }
+    .popup-content .cancel-btn {
+      background: #6b21a8;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      font-family: 'Poppins', sans-serif;
+      min-height: 48px;
+    }
+    .popup-content .cancel-btn:hover {
+      background: #5a1a90;
+      transform: translateY(-2px);
+    }
+    @media (max-width: 640px) {
+      .header {
+        padding: 1rem 1.25rem;
+      }
+      .header .balance-container {
+        font-size: 1.5rem;
+      }
+      .header .currency {
+        font-size: 0.8rem;
+      }
+      .content {
+        padding: 1rem 1.25rem;
+      }
+      .form-section, .transactions-section {
+        padding: 1rem;
+      }
+      .form-group label {
+        font-size: 0.9rem;
+      }
+      .form-group select, .form-group input {
+        font-size: 0.9rem;
+        padding: 0.6rem;
+      }
+      .submit-btn {
+        font-size: 1rem;
+        padding: 0.8rem 1.5rem;
+      }
+      .transaction-item {
+        font-size: 0.9rem;
+      }
+      .transaction-item .icon {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+      }
+      .footer a {
+        font-size: 0.9rem;
+      }
+      .footer .icon {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body class="flex flex-col">
+  <!-- Header -->
+  <header class="header">
+    <div class="user-info">
+      <a href="profile.html"><img src="https://i.pravatar.cc/35?img=3" alt="Hakan Celik" class="user-photo"></a>
+      <span>Hi, Hakan Celik 👋</span>
+    </div>
+    <div class="balance-container">
+      <div class="balance">₺543,433.65</div>
+      <div class="currency">
+        <img src="https://flagcdn.com/w14/tr.png" alt="Turkish Flag"> TRY
+      </div>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="content">
+    <div class="form-section">
+      <h2 class="text-2xl font-bold mb-6 font-poppins">Transfer Money 💸</h2>
+      <form id="transferForm">
+        <div class="form-group">
+          <label for="account-number">Account Number 🔢</label>
+          <input type="text" id="account-number" name="account-number" placeholder="Enter account number" required>
+          <span class="error">Account not correct</span>
+        </div>
+        <div class="form-group">
+          <label for="bank-name">Bank Name 🏦</label>
+          <select id="bank-name" name="bank-name" required>
+            <option value="">Select a bank</option>
+            <option value="denizbank">DenizBank <img class="bank-logo" src="https://i.ibb.co/5Y0m3kM/denizbank-logo.png" alt="DenizBank Logo"></option>
+            <option value="ziraat">Ziraat Bankası <img class="bank-logo" src="https://i.ibb.co/YjrqYpZ/ziraat-logo.png" alt="Ziraat Logo"></option>
+            <option value="isbank">İş Bankası <img class="bank-logo" src="https://i.ibb.co/5xX0qK8/isbank-logo.png" alt="İş Bankası Logo"></option>
+            <option value="garanti">Garanti BBVA <img class="bank-logo" src="https://i.ibb.co/xmN7m7Y/garanti-logo.png" alt="Garanti Logo"></option>
+            <option value="akbank">Akbank <img class="bank-logo" src="https://i.ibb.co/3s7Jq7T/akbank-logo.png" alt="Akbank Logo"></option>
+            <option value="yapikredi">Yapı Kredi <img class="bank-logo" src="https://i.ibb.co/D7R2C5v/yapikredi-logo.png" alt="Yapı Kredi Logo"></option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="recipient-name">Recipient Name 👤</label>
+          <input type="text" id="recipient-name" name="recipient-name" placeholder="Enter recipient name" required>
+          <span class="checkmark">✓</span>
+        </div>
+        <div class="form-group">
+          <label for="amount">Amount to Send 💰</label>
+          <input type="number" id="amount" name="amount" placeholder="Enter amount" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="pin">4-Digit PIN 🔐</label>
+          <input type="password" id="pin" name="pin" placeholder="Enter 4-digit PIN" maxlength="4" pattern="\d{4}" required>
+          <span class="error">Invalid PIN</span>
+        </div>
+        <button type="button" id="proceed-btn" class="submit-btn hidden">Proceed to Payment 🔄</button>
+      </form>
+    </div>
+    <div class="transactions-section">
+      <h3 class="text-xl font-semibold mb-4 font-poppins">Recent Transactions 📜</h3>
+      <div class="transaction-item">
+        <div class="details">
+          <div class="icon">B</div>
+          <div>
+            <div class="name">Bobatunde Mason 👤</div>
+            <div class="time">08/09/2025 02:00 PM</div>
+          </div>
+        </div>
+        <span class="amount positive">+₺50,000.00 📈</span>
+      </div>
+      <div class="transaction-item">
+        <div class="details">
+          <div class="icon">E</div>
+          <div>
+            <div class="name">Electricity Bill ⚡️</div>
+            <div class="time">08/09/2025 01:30 PM</div>
+          </div>
+        </div>
+        <span class="amount negative">-₺2,000.00 📉</span>
+      </div>
+      <div class="transaction-item">
+        <div class="details">
+          <div class="icon">T</div>
+          <div>
+            <div class="name">Tiwa Adeleke 👤</div>
+            <div class="time">08/09/2025 01:00 PM</div>
+          </div>
+        </div>
+        <span class="amount negative">-₺36,000.00 📉</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup -->
+  <div class="popup" id="errorPopup">
+    <div class="popup-content">
+      <h3>Transaction Failed 🚫</h3>
+      <p>Transaction unsuccessful, please try again or visit your bank branch.</p>
+      <button class="cancel-btn" id="cancelPopup">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <a href="home.html" class="details">
+      <span class="icon">🏠</span>
+      <span>Home</span>
+    </a>
+    <a href="pay.html" class="details">
+      <span class="icon">💸</span>
+      <span>Pay</span>
+    </a>
+    <a href="invest.html" class="details">
+      <span class="icon">📈</span>
+      <span>Invest</span>
+    </a>
+    <a href="cards.html" class="details">
+      <span class="icon">💳</span>
+      <span>Cards</span>
+    </a>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('transferForm');
+      const accountNumber = document.getElementById('account-number');
+      const bankName = document.getElementById('bank-name');
+      const recipientName = document.getElementById('recipient-name');
+      const amount = document.getElementById('amount');
+      const pin = document.getElementById('pin');
+      const proceedBtn = document.getElementById('proceed-btn');
+      const errorPopup = document.getElementById('errorPopup');
+      const cancelPopup = document.getElementById('cancelPopup');
+      const recipientNameGroup = recipientName.parentElement;
+      const checkmark = recipientName.nextElementSibling;
+      const pinError = pin.parentElement.querySelector('.error');
+
+      // Mock bank account database
+      const accountDatabase = [
+        { accountNumber: '1234567890', bank: 'denizbank', name: 'Ali Yılmaz' },
+        { accountNumber: '0987654321', bank: 'ziraat', name: 'Ayşe Demir' },
+        { accountNumber: '1122334455', bank: 'isbank', name: 'Mehmet Kaya' }
+      ];
+
+      // Function to check if required fields for verification are filled
+      function checkVerificationFields() {
+        return accountNumber.value.trim() !== '' && bankName.value !== '';
+      }
+
+      // Function to check if all fields are filled for proceeding
+      function checkProceedFields() {
+        return (
+          accountNumber.value.trim() !== '' &&
+          bankName.value !== '' &&
+          recipientName.value.trim() !== '' &&
+          amount.value.trim() !== '' &&
+          pin.value.length === 4
+        );
+      }
+
+      // Function to verify account and auto-fill recipient name
+      function verifyAccount() {
+        const account = accountDatabase.find(
+          acc => acc.accountNumber === accountNumber.value.trim() && acc.bank === bankName.value
+        );
+        if (account) {
+          recipientName.value = account.name;
+          recipientNameGroup.classList.add('verified');
+          checkmark.style.display = 'block';
+          accountNumber.disabled = true;
+          bankName.disabled = true;
+          recipientName.disabled = true;
+          accountNumber.parentElement.classList.remove('invalid');
+          accountNumber.parentElement.querySelector('.error').style.display = 'none';
+          proceedBtn.classList.toggle('hidden', !checkProceedFields());
+        } else {
+          recipientName.value = '';
+          recipientNameGroup.classList.remove('verified');
+          checkmark.style.display = 'none';
+          accountNumber.parentElement.classList.add('invalid');
+          accountNumber.parentElement.querySelector('.error').style.display = 'block';
+          proceedBtn.classList.add('hidden');
+        }
+      }
+
+      // Real-time validation for account number and bank name
+      [accountNumber, bankName].forEach(input => {
+        input.addEventListener('input', () => {
+          proceedBtn.classList.add('hidden');
+          recipientNameGroup.classList.remove('verified');
+          checkmark.style.display = 'none';
+          accountNumber.parentElement.classList.remove('invalid');
+          accountNumber.parentElement.querySelector('.error').style.display = 'none';
+          recipientName.value = '';
+          if (checkVerificationFields()) {
+            verifyAccount();
+          }
+        });
+      });
+
+      // Real-time validation for amount and pin
+      [amount, pin].forEach(input => {
+        input.addEventListener('input', () => {
+          proceedBtn.classList.toggle('hidden', !checkProceedFields());
+          pinError.style.display = 'none';
+          pin.parentElement.classList.remove('invalid');
+        });
+      });
+
+      // Proceed to payment button click
+      proceedBtn.addEventListener('click', function() {
+        if (pin.value === '8553') {
+          errorPopup.style.display = 'flex';
+        } else {
+          pin.parentElement.classList.add('invalid');
+          pinError.style.display = 'block';
+        }
+      });
+
+      // Cancel popup button click
+      cancelPopup.addEventListener('click', function() {
+        errorPopup.style.display = 'none';
+        accountNumber.value = '';
+        bankName.value = '';
+        recipientName.value = '';
+        amount.value = '';
+        pin.value = '';
+        recipientNameGroup.classList.remove('verified');
+        checkmark.style.display = 'none';
+        proceedBtn.classList.add('hidden');
+        accountNumber.disabled = false;
+        bankName.disabled = false;
+        recipientName.disabled = false;
+        accountNumber.parentElement.classList.remove('invalid');
+        accountNumber.parentElement.querySelector('.error').style.display = 'none';
+        pinError.style.display = 'none';
+        pin.parentElement.classList.remove('invalid');
+      });
+    });
+  </script>
+</body>
+</html>

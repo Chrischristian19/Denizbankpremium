@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deniz Bank - Request Money</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Roboto and Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #f0f2f5, #e0e7ff);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #6b21a8, #8e44ad);
+      color: white;
+      padding: 1rem 1.5rem;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-bottom: 3px solid #5a1a90;
+    }
+    .header .user-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      transition: color 0.3s;
+    }
+    .header .user-info:hover {
+      color: #ddd;
+    }
+    .header .user-photo {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+      object-fit: cover;
+      cursor: pointer;
+      transition: transform 0.3s;
+      border: 2px solid #ffffff;
+    }
+    .header .user-photo:hover {
+      transform: scale(1.15);
+    }
+    .header .balance-container {
+      display: flex;
+      justify-content: center;
+      align-items: baseline;
+      font-size: 1.5rem;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+    }
+    .header .balance {
+      margin-right: 0.5rem;
+    }
+    .header .currency {
+      font-size: 0.75rem;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 0.15rem 0.4rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+    }
+    .header .currency img {
+      width: 12px;
+      height: 12px;
+      margin-right: 0.2rem;
+    }
+    .content {
+      flex-grow: 1;
+      padding: 1rem 1rem;
+      overflow-y: auto;
+    }
+    .description-section {
+      background: white;
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border: 3px solid #6b21a8;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .description-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 18px rgba(107, 33, 168, 0.3);
+    }
+    .description-section p {
+      font-size: 0.9rem;
+      color: #444;
+      margin-bottom: 1rem;
+    }
+    .banner-section {
+      background: white;
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      border: 3px solid #6b21a8;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .banner-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 18px rgba(107, 33, 168, 0.3);
+    }
+    .banner-section img {
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .form-section {
+      background: white;
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.5s ease-in;
+      border: 3px solid #6b21a8;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .form-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 18px rgba(107, 33, 168, 0.3);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .form-group {
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.9rem;
+      color: #444;
+      margin-bottom: 0.4rem;
+      font-weight: 500;
+    }
+    .form-group select, .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 0.6rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      min-height: 44px; /* Ensure touch-friendly size */
+    }
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .form-group select:focus, .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: #6b21a8;
+      box-shadow: 0 0 6px rgba(107, 33, 168, 0.3);
+    }
+    .form-group .invalid {
+      border-color: #ef4444;
+    }
+    .form-group .error {
+      color: #ef4444;
+      font-size: 0.8rem;
+      margin-top: 0.2rem;
+      display: none;
+    }
+    .form-group.invalid .error {
+      display: block;
+    }
+    .form-group .balance-info {
+      color: #6b21a8;
+      font-size: 0.8rem;
+      margin-top: 0.2rem;
+    }
+    .submit-btn {
+      background: linear-gradient(135deg, #6b21a8, #8e44ad);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      width: 100%;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      margin-top: 0.75rem;
+      min-height: 48px; /* Ensure touch-friendly size */
+      font-family: 'Poppins', sans-serif;
+    }
+    .submit-btn:hover {
+      background: linear-gradient(135deg, #5a1a90, #7d3aa5);
+      transform: translateY(-2px);
+    }
+    .submit-btn.hidden {
+      display: none;
+    }
+    .footer {
+      background: #6b21a8;
+      padding: 0.5rem;
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .footer a {
+      color: white;
+      text-decoration: none;
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: color 0.3s;
+      padding: 0.5rem;
+    }
+    .footer a:hover {
+      color: #bbd0ff;
+    }
+    .footer .icon {
+      font-size: 1.2rem;
+      margin-bottom: 0.2rem;
+    }
+    /* Popup Styles */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .popup-content {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      max-width: 90%;
+      width: 300px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      animation: popupFadeIn 0.3s ease-in;
+      border: 3px solid #6b21a8;
+    }
+    @keyframes popupFadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .popup-content h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      font-family: 'Poppins', sans-serif;
+    }
+    .popup-content.success h3 {
+      color: #10b981;
+    }
+    .popup-content.error h3 {
+      color: #ef4444;
+    }
+    .popup-content p {
+      color: #444;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    .popup-content .cancel-btn {
+      background: #6b21a8;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      min-height: 44px; /* Ensure touch-friendly size */
+      font-family: 'Poppins', sans-serif;
+    }
+    .popup-content .cancel-btn:hover {
+      background: #5a1a90;
+      transform: translateY(-2px);
+    }
+    @media (max-width: 640px) {
+      .header {
+        padding: 0.75rem 1rem;
+      }
+      .header .balance-container {
+        font-size: 1.25rem;
+      }
+      .header .currency {
+        font-size: 0.7rem;
+      }
+      .content {
+        padding: 0.75rem;
+      }
+      .description-section, .banner-section, .form-section {
+        padding: 0.75rem;
+      }
+      .form-group label {
+        font-size: 0.85rem;
+      }
+      .form-group select, .form-group input, .form-group textarea {
+        font-size: 0.85rem;
+        padding: 0.5rem;
+      }
+      .submit-btn {
+        font-size: 0.9rem;
+        padding: 0.6rem 1.2rem;
+      }
+      .footer a {
+        font-size: 0.7rem;
+        padding: 0.4rem;
+      }
+      .footer .icon {
+        font-size: 1.1rem;
+      }
+      .banner-section img {
+        max-height: 150px;
+      }
+    }
+  </style>
+</head>
+<body class="flex flex-col">
+  <!-- Header -->
+  <header class="header">
+    <div class="user-info">
+      <a href="profile.html"><img src="https://i.pravatar.cc/35?img=3" alt="Hakan Celik" class="user-photo"></a>
+      <span>Hi, Hakan Celik 👋</span>
+    </div>
+    <div class="balance-container">
+      <div class="balance">₺543,433.65</div>
+      <div class="currency">
+        <img src="https://flagcdn.com/w14/tr.png" alt="Turkish Flag"> TRY
+      </div>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="content">
+    <div class="description-section">
+      <h3 class="text-lg font-bold mb-2">Request Money Page 💸</h3>
+      <p>This is the Request Money page where you can write a check and request your bank to fund your account or another account. Enter the account number (if funding another account), the amount, a message or check details, your 4-digit card number, and PIN. The request will be successful if the PIN is correct.</p>
+      <p>Note: All requests are subject to bank approval. Use your 4-digit PIN for verification.</p>
+    </div>
+    <div class="banner-section">
+      <h3 class="text-lg font-bold mb-2">Request Funding 📩</h3>
+      <img src="https://images.unsplash.com/photo-1553729459-efe14ef6055d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Request Money Banner" />
+    </div>
+    <div class="form-section">
+      <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Request Money 🔄</h2>
+      <form id="requestForm">
+        <div class="form-group">
+          <label for="request-type">Request Type 📝</label>
+          <select id="request-type" name="request-type" required>
+            <option value="">Select type</option>
+            <option value="own">Fund My Account</option>
+            <option value="other">Fund Another Account</option>
+          </select>
+        </div>
+        <div class="form-group hidden" id="account-group">
+          <label for="account-number">Account Number 🔢</label>
+          <input type="text" id="account-number" name="account-number" placeholder="Enter account number" required>
+          <span class="error">Invalid account number</span>
+        </div>
+        <div class="form-group">
+          <label for="amount">Amount (TRY) 💰</label>
+          <input type="number" id="amount" name="amount" placeholder="Enter amount" step="0.01" min="1" required>
+          <span class="error">Please enter a valid amount</span>
+        </div>
+        <div class="form-group">
+          <label for="message">Message/Check Details 📄</label>
+          <textarea id="message" name="message" placeholder="Enter your request message or check details" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="card-number">4-Digit Card Number 💳</label>
+          <input type="password" id="card-number" name="card-number" placeholder="Enter 4-digit card number" maxlength="4" pattern="\d{4}" required>
+          <span class="error">Invalid card number</span>
+        </div>
+        <div class="form-group">
+          <label for="pin">4-Digit PIN 🔐</label>
+          <input type="password" id="pin" name="pin" placeholder="Enter 4-digit PIN" maxlength="4" pattern="\d{4}" required>
+          <span class="error">Invalid PIN</span>
+        </div>
+        <button type="button" id="proceed-btn" class="submit-btn hidden">Proceed to Request 📤</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Success Popup -->
+  <div class="popup" id="successPopup">
+    <div class="popup-content">
+      <h3 class="text-lg font-bold mb-2">Request Successful 🎉</h3>
+      <p>Your request has been sent to the bank.</p>
+      <button class="cancel-btn" id="closeSuccessPopup">Close</button>
+    </div>
+  </div>
+
+  <!-- Error Popup -->
+  <div class="popup" id="errorPopup">
+    <div class="popup-content">
+      <h3 class="text-lg font-bold mb-2">Request Failed 🚫</h3>
+      <p>Invalid PIN. Please try again.</p>
+      <button class="cancel-btn" id="closeErrorPopup">Close</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <a href="home.html" class="details">
+      <span class="icon">🏠</span>
+      <span>Home</span>
+    </a>
+    <a href="pay.html" class="details">
+      <span class="icon">💸</span>
+      <span>Pay</span>
+    </a>
+    <a href="invest.html" class="details">
+      <span class="icon">📈</span>
+      <span>Invest</span>
+    </a>
+    <a href="cards.html" class="details">
+      <span class="icon">💳</span>
+      <span>Cards</span>
+    </a>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('requestForm');
+      const requestType = document.getElementById('request-type');
+      const accountGroup = document.getElementById('account-group');
+      const accountNumber = document.getElementById('account-number');
+      const amount = document.getElementById('amount');
+      const message = document.getElementById('message');
+      const cardNumber = document.getElementById('card-number');
+      const pin = document.getElementById('pin');
+      const proceedBtn = document.getElementById('proceed-btn');
+      const successPopup = document.getElementById('successPopup');
+      const errorPopup = document.getElementById('errorPopup');
+      const closeSuccessPopup = document.getElementById('closeSuccessPopup');
+      const closeErrorPopup = document.getElementById('closeErrorPopup');
+      const amountError = amount.parentElement.querySelector('.error');
+      const cardError = cardNumber.parentElement.querySelector('.error');
+      const pinError = pin.parentElement.querySelector('.error');
+      const accountError = accountNumber.parentElement.querySelector('.error');
+
+      // Show/hide account number field based on request type
+      requestType.addEventListener('change', function() {
+        if (requestType.value === 'other') {
+          accountGroup.classList.remove('hidden');
+          accountNumber.required = true;
+        } else {
+          accountGroup.classList.add('hidden');
+          accountNumber.required = false;
+        }
+      });
+
+      // Function to check if all fields are filled
+      function checkFieldsFilled() {
+        return (
+          requestType.value !== '' &&
+          (requestType.value === 'own' || (requestType.value === 'other' && accountNumber.value.trim() !== '')) &&
+          amount.value.trim() !== '' && amount.value > 0 &&
+          message.value.trim() !== '' &&
+          cardNumber.value.length === 4 &&
+          pin.value.length === 4
+        );
+      }
+
+      // Real-time validation for all fields
+      [requestType, accountNumber, amount, message, cardNumber, pin].forEach(input => {
+        input.addEventListener('input', () => {
+          proceedBtn.classList.toggle('hidden', !checkFieldsFilled());
+          amount.parentElement.classList.remove('invalid');
+          amountError.style.display = 'none';
+          message.parentElement.classList.remove('invalid');
+          cardNumber.parentElement.classList.remove('invalid');
+          cardError.style.display = 'none';
+          pin.parentElement.classList.remove('invalid');
+          pinError.style.display = 'none';
+          accountNumber.parentElement.classList.remove('invalid');
+          accountError.style.display = 'none';
+        });
+      });
+
+      // Proceed to request button click
+      proceedBtn.addEventListener('click', function() {
+        if (pin.value === '8553') {
+          successPopup.style.display = 'flex';
+        } else {
+          pin.parentElement.classList.add('invalid');
+          pinError.textContent = 'Unsuccessful PIN';
+          pinError.style.display = 'block';
+        }
+      });
+
+      // Close success popup
+      closeSuccessPopup.addEventListener('click', function() {
+        successPopup.style.display = 'none';
+        resetForm();
+      });
+
+      // Close error popup
+      closeErrorPopup.addEventListener('click', function() {
+        errorPopup.style.display = 'none';
+        resetForm();
+      });
+
+      // Function to reset form
+      function resetForm() {
+        requestType.value = '';
+        accountNumber.value = '';
+        amount.value = '';
+        message.value = '';
+        cardNumber.value = '';
+        pin.value = '';
+        proceedBtn.classList.add('hidden');
+        accountGroup.classList.add('hidden');
+        amount.parentElement.classList.remove('invalid');
+        amountError.style.display = 'none';
+        message.parentElement.classList.remove('invalid');
+        cardNumber.parentElement.classList.remove('invalid');
+        cardError.style.display = 'none';
+        pin.parentElement.classList.remove('invalid');
+        pinError.style.display = 'none';
+        accountNumber.parentElement.classList.remove('invalid');
+        accountError.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
